@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "yukgambar-api": {
+      "root": "yukgambar-api",
+      "framework": "express"
+    },
+    "yukgambar-pwa": {
+      "root": "yukgambar-pwa",
+      "framework": "vite"
+    }
+  },
+  "rewrites": []
+}
