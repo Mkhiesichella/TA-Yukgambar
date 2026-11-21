@@ -10,5 +10,14 @@
       "framework": "vite"
     }
   },
-  "rewrites": []
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": { "service": "yukgambar-api" }
+    },
+    {
+      "source": "/(.*)",
+      "destination": { "service": "yukgambar-pwa" }
+    }
+  ]
 }
