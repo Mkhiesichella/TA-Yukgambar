@@ -3,6 +3,7 @@ import { projectService } from '../services/projectService.js';
 import { useAsync } from '../hooks/useAsync.js';
 import { ErrorBox, Loading } from '../components/State.jsx';
 import { dataUrlToCanvas, fmt, savePng } from '../lib/canvas.js';
+import SaveDialog from '../components/SaveDialog.jsx';
 
 const ST = { progress: 'In Progress', done: 'Done' };
 
@@ -11,6 +12,7 @@ export default function ProjectDetail({ id, onBack, onEdit, notify }) {
   const [over, setOver] = useState({});
   const [busy, setBusy] = useState(false);
   const [confirm, setConfirm] = useState(false);
+  const [editInfo, setEditInfo] = useState(false);
   const p = data && { ...data, ...over };
 
   const toggle = async () => {
@@ -38,6 +40,20 @@ export default function ProjectDetail({ id, onBack, onEdit, notify }) {
       setBusy(false);
     }
   };
+  // Ubah judul / pembuat / status saja (tanpa menggambar ulang)
+  const saveInfo = async (f) => {
+    setBusy(true);
+    try {
+      const r = await projectService.update(id, { title: f.title, author: f.author, status: f.status });
+      setOver({ title: r.title, author: r.author, status: r.status, updated_at: r.updated_at });
+      notify('Info project diperbarui');
+      setEditInfo(false);
+    } catch (e) {
+      notify(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
   const png = async () => savePng(await dataUrlToCanvas(p.image_data), p.title);
 
   return (
@@ -57,11 +73,21 @@ export default function ProjectDetail({ id, onBack, onEdit, notify }) {
           </dl>
           <div className="bar">
             <button className="go" onClick={() => onEdit(p)}>Lanjut menggambar</button>
+            <button onClick={() => setEditInfo(true)}>Ubah judul / info</button>
             <button onClick={png}>Unduh PNG</button>
             <button onClick={toggle} disabled={busy}>{p.status === 'done' ? 'Kembalikan ke In Progress' : 'Tandai Done'}</button>
             <button className="bad" onClick={remove} disabled={busy}>{confirm ? 'Tekan lagi untuk menghapus' : 'Hapus'}</button>
           </div>
         </div>
+      )}
+      {editInfo && p && (
+        <SaveDialog
+          mode="info"
+          initial={{ title: p.title, status: p.status, author: p.author }}
+          saving={busy}
+          onCancel={() => setEditInfo(false)}
+          onSubmit={saveInfo}
+        />
       )}
     </>
   );

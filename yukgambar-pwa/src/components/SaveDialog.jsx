@@ -22,7 +22,7 @@ export default function SaveDialog({ mode, initial, saving, onCancel, onSubmit }
   return (
     <div className="back" onMouseDown={(e) => e.target === e.currentTarget && onCancel()}>
       <form className="modal" onSubmit={submit} role="dialog" aria-modal="true" aria-labelledby="dlgt">
-        <h2 id="dlgt">{mode === 'update' ? 'Simpan perubahan' : 'Simpan ke Project'}</h2>
+        <h2 id="dlgt">{mode === 'info' ? 'Ubah info project' : mode === 'update' ? 'Simpan perubahan' : 'Simpan ke Project'}</h2>
         <label className="f">
           Judul gambar
           <input ref={titleRef} type="text" value={f.title} onChange={set('title')} placeholder="Contoh: Sketsa kucing" maxLength={60} />

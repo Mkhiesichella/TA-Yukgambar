@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { drawTemplate } from '../lib/templates.js';
-import { DEFAULT_AUTHOR, flatten, floodFill, savePng, thumbOf } from '../lib/canvas.js';
+import { DEFAULT_AUTHOR, flatten, floodFill, thumbOf } from '../lib/canvas.js';
 import { projectService } from '../services/projectService.js';
 import SaveDialog from '../components/SaveDialog.jsx';
 import SizeDialog from '../components/SizeDialog.jsx';
@@ -178,7 +178,6 @@ export default function Draw({ editing, onEditingChange, tpl, notify }) {
     ctx().clearRect(0, 0, W, H);
     saveDraft();
   };
-  const download = () => savePng(flatten(bg.current, cv.current), editing?.title || 'yukgambar');
 
   const save = async (form) => {
     setSaving(true);
@@ -260,7 +259,6 @@ export default function Draw({ editing, onEditingChange, tpl, notify }) {
       <div className="bar" style={{ marginTop: 12 }}>
         <button onClick={undo} disabled={!h.undo.length} title="Undo (Ctrl+Z)">↶ Undo</button>
         <button onClick={redo} disabled={!h.redo.length} title="Redo (Ctrl+Y)">↷ Redo</button>
-        <button onClick={download}>↓ Unduh PNG</button>
         <button onClick={() => setSizeOpen(true)} title="Ubah ukuran kanvas">⤢ Ukuran {W}×{H}</button>
       </div>
 
