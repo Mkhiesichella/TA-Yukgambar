@@ -48,6 +48,9 @@ dt { color: var(--mute); } dd { margin: 0; }
 .badge { display: inline-block; font-size: 12px; font-weight: 500; padding: 1px 10px; border-radius: 99px; margin-top: 4px; }
 .b-progress { background: var(--acc); color: #241f4a; }
 .b-done { background: #2f9e44; color: #fff; }
+.b-custom { background: var(--pri); color: var(--onpri); }
+.preview { width: 100%; max-height: 180px; object-fit: contain; border: 1.5px solid var(--line); border-radius: 12px; background: #fff; }
+input[type=file] { font-size: 14px; color: var(--ink); }
 .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
 .edit { margin-top: 12px; padding: 8px 12px; border: 1.5px dashed var(--pri); border-radius: 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .state { text-align: center; padding: 36px 12px; color: var(--mute); }

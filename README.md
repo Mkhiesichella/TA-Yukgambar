@@ -63,9 +63,12 @@ Cek `https://<api>.vercel.app/` menjawab `{"name":"YukGambar API","status":"ok"}
 Environment Variables: `VITE_API_BASE_URL = https://<api>.vercel.app/api` → Deploy.
 (Setelah mengubah variabel, lakukan **Redeploy**.)
 
+## Upload template (opsional)
+Jalankan `yukgambar-api/add-template-upload.sql` sekali di Supabase SQL Editor, lalu deploy ulang backend & frontend.
+
 ## Fitur
-Kanvas (pensil, spidol, stabilo, penghapus, cat isi warna), undo/redo (Ctrl+Z / Ctrl+Y), template latar,
-simpan project (judul + status In Progress/Done + pembuat), edit & simpan perubahan, unduh PNG,
+Kanvas dengan ukuran bisa diatur (preset + kustom), alat (pensil, spidol, stabilo, penghapus, cat isi warna), undo/redo (Ctrl+Z / Ctrl+Y), template latar (bawaan + unggah PNG/JPG sendiri),
+simpan project (judul + status In Progress/Done + pembuat), edit & simpan perubahan, ubah judul/pembuat/status dari halaman detail, unduh PNG,
 cari / urutkan / filter project, state loading & error dengan tombol "Coba lagi",
 draft otomatis di localStorage, PWA (manifest, service worker, install, offline).
 
@@ -82,4 +85,3 @@ draft otomatis di localStorage, PWA (manifest, service worker, install, offline)
 ## Catatan
 - Vercel membatasi body request fungsi ±4,5 MB. Gambar dikirim sebagai JPEG kualitas 0,8 (biasanya < 500 KB), jadi aman.
 - Jangan pernah memakai `service_role` key di frontend. Di backend boleh (lewat environment variable).
-"# TA-Yukgambar" 

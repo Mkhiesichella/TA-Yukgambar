@@ -11,6 +11,7 @@ const TOOLS = { pencil: ['Pensil', 3], pen: ['Spidol', 6], marker: ['Stabilo', 2
 
 export default function Draw({ editing, onEditingChange, tpl, notify }) {
   const bg = useRef(), cv = useRef();
+  const bgToken = useRef(0); // mencegah gambar latar basi menimpa yang baru
   const pending = useRef(null); // gambar yang harus digambar ulang setelah kanvas berubah ukuran
   const hist = useRef({ undo: [], redo: [] });
   const drawing = useRef(false), last = useRef(null);
@@ -27,8 +28,24 @@ export default function Draw({ editing, onEditingChange, tpl, notify }) {
   const ctx = () => cv.current.getContext('2d');
 
   // Mengubah width/height canvas menghapus isinya, jadi latar & gambar digambar ulang di sini
+  const paintBg = () => {
+    const c = bg.current.getContext('2d');
+    const token = ++bgToken.current;
+    if (!tpl.image) return drawTemplate(c, W, H, tpl.id);
+    c.fillStyle = '#fff';
+    c.fillRect(0, 0, W, H);
+    const im = new Image();
+    im.onload = () => {
+      if (token !== bgToken.current) return;
+      const k = Math.min(W / im.width, H / im.height);
+      const w = im.width * k, h = im.height * k;
+      c.drawImage(im, (W - w) / 2, (H - h) / 2, w, h);
+    };
+    im.src = tpl.image;
+  };
+
   useLayoutEffect(() => {
-    drawTemplate(bg.current.getContext('2d'), W, H, tpl);
+    paintBg();
     if (pending.current) {
       const c = ctx();
       c.globalCompositeOperation = 'source-over';
@@ -38,7 +55,16 @@ export default function Draw({ editing, onEditingChange, tpl, notify }) {
       pending.current = null;
       tick((n) => n + 1);
     }
-  }, [tpl, W, H, rev]);
+  }, [tpl.id, tpl.image, W, H, rev]);
+
+  // Template gambar + "sesuaikan ukuran": kanvas mengikuti ukuran gambar
+  useEffect(() => {
+    if (!tpl.image || !tpl.fit) return;
+    const im = new Image();
+    im.onload = () => resize(im.width, im.height);
+    im.src = tpl.image;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tpl.nonce]);
 
   // Muat gambar ke kanvas dengan ukuran aslinya
   const loadImage = (src) => {
@@ -187,7 +213,7 @@ export default function Draw({ editing, onEditingChange, tpl, notify }) {
         title: form.title,
         author: form.author,
         status: form.status,
-        template_id: tpl,
+        template_id: tpl.id,
         image_data: flat.toDataURL('image/jpeg', 0.8),
         thumb: thumbOf(flat),
       };

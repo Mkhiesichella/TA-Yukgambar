@@ -12,7 +12,8 @@ export default function App() {
   const [tab, setTab] = useState('draw');
   const [detail, setDetail] = useState(null); // id project / template yang dibuka
   const [editing, setEditing] = useState(null);
-  const [tpl, setTpl] = useState(1);
+  const [tpl, setTpl] = useState({ id: 1, image: null, fit: false, nonce: 0 });
+  const DEFAULT_TPL = { id: 1, image: null, fit: false, nonce: 0 };
   const [toast, setToast] = useState('');
   const timer = useRef();
 
@@ -46,7 +47,7 @@ export default function App() {
               onBack={() => setDetail(null)}
               onEdit={(p) => {
                 setEditing(p);
-                setTpl(1); // gambar tersimpan sudah memuat template di dalamnya
+                setTpl(DEFAULT_TPL); // gambar tersimpan sudah memuat template di dalamnya
                 go('draw');
                 notify(`Mengedit: ${p.title}`);
               }}
@@ -59,16 +60,17 @@ export default function App() {
           (detail ? (
             <TemplateDetail
               id={detail}
-              current={tpl}
+              current={tpl.id}
+              notify={notify}
               onBack={() => setDetail(null)}
-              onUse={(id, name) => {
-                setTpl(id);
+              onUse={(t, fit) => {
+                setTpl({ id: t.id, image: t.image_data || null, fit: !!fit, nonce: Date.now() });
                 go('draw');
-                notify(`${name} dipakai`);
+                notify(`${t.name} dipakai`);
               }}
             />
           ) : (
-            <Templates onOpen={setDetail} />
+            <Templates onOpen={setDetail} notify={notify} />
           ))}
 
         {tab === 'profile' && <Profile />}

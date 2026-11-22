@@ -102,3 +102,30 @@ export function floodFill(bg, cv, px, py, hex) {
     }
   ctx.putImageData(o, 0, 0);
 }
+
+// Baca file gambar (PNG/JPG/WebP) -> dikecilkan (maks 1200 px) -> data URL + thumbnail
+export function readImageFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('Gagal membaca file'));
+    reader.onload = () => {
+      const im = new Image();
+      im.onerror = () => reject(new Error('File bukan gambar yang valid'));
+      im.onload = () => {
+        const k = Math.min(1, 1200 / Math.max(im.width, im.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(im.width * k);
+        c.height = Math.round(im.height * k);
+        const x = c.getContext('2d');
+        x.fillStyle = '#fff';
+        x.fillRect(0, 0, c.width, c.height);
+        x.drawImage(im, 0, 0, c.width, c.height);
+        let data = c.toDataURL('image/png');
+        if (data.length > 2_000_000) data = c.toDataURL('image/jpeg', 0.85); // PNG kebesaran -> JPEG
+        resolve({ image_data: data, thumb: thumbOf(c) });
+      };
+      im.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}

@@ -16,5 +16,7 @@ r.delete('/projects/:id', wrap(p.deleteProject));
 
 r.get('/templates', wrap(t.listTemplates));
 r.get('/templates/:id', wrap(t.getTemplate));
+r.post('/templates', wrap(t.createTemplate));
+r.delete('/templates/:id', wrap(t.deleteTemplate));
 
 export default r;
